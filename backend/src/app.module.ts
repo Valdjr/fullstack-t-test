@@ -1,14 +1,22 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { EnvironmentConfigModule } from './infrastructure/config/environment-config/environment-config.module';
-import { TypeormModule } from './infrastructure/config/typeorm/typeorm.module';
-import { LoggerModule } from './infrastructure/logger/logger.module';
-import { RepositoriesModule } from './infrastructure/repositories/repositories.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { StockModule } from './controllers/stock/stock.module';
+import { Stock } from './schemas/stock/stock';
+import { StockAdapterModule } from './adapters/stock/stock-adapter.module';
 
 @Module({
-  imports: [EnvironmentConfigModule, TypeormModule, LoggerModule, RepositoriesModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'ftt',
+      database: 'postgres',
+      entities: [Stock],
+    }),
+    StockModule,
+    StockAdapterModule,
+  ],
 })
 export class AppModule {}
